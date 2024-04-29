@@ -7,6 +7,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # ------------------------------------------------------------------------
 import collections
+from collections.abc import Mapping
 import json
 import logging
 import os

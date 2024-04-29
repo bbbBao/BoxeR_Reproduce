@@ -1,284 +1,216 @@
 # BoxeR
 
-By [Duy-Kien Nguyen](https://scholar.google.com/citations?user=welhhBIAAAAJ&hl=en), Jihong Ju, Olaf Booij, [Martin R. Oswald](https://scholar.google.de/citations?user=biytQP8AAAAJ&hl=en), [Cees Snoek](https://www.ceessnoek.info/).
+This repository is a fork from [BoxeR](https://github.com/kienduynguyen/BoxeR). Please check the original repository for more information on the mechanism. 
 
-This repository is an official implementation of the paper [BoxeR: Box-Attention for 2D and 3D Transformers](https://arxiv.org/abs/2111.13087).
+BoxeR is proposed by [Duy-Kien Nguyen](https://scholar.google.com/citations?user=welhhBIAAAAJ&hl=en), Jihong Ju, Olaf Booij, [Martin R. Oswald](https://scholar.google.de/citations?user=biytQP8AAAAJ&hl=en), [Cees Snoek](https://www.ceessnoek.info/).
+
+This repository is an implementation of the paper [BoxeR: Box-Attention for 2D and 3D Transformers](https://arxiv.org/abs/2111.13087).
 
 ## Introduction
 
-**Update.** We add an option that can produce mask during training and inference with less gpu memory. You can simply set this mode on by `model_config.boxer2d.transformer.params.residual_mode=v2`.
+We are very interested in the BoxeR attention proposed from the paper thus we decided to use this paper as our final project topic for COSC-5470. However, since the code for BoxeR was published in 2022, 2 years ago from now, a lot of the dependencies are out-of-date and several functions of some libraries have already deprecated. As a result, we create this repository to record the changes we made to the original codebase. 
 
-**TL; DR.** BoxeR is a Transformer-based network for end-to-end 2D object detection and instance segmentation, along with 3D object detection. The core of the network is Box-Attention which predicts regions of interest to attend by learning the transformation (translation, scaling, and rotation) from reference windows, yielding competitive performance on several vision tasks.
+## Changes
 
-![BoxeR](./figs/teaser.png)
+Below are the changes we made to the original code so that the program can still operate today as intended.
 
-![BoxeR](./figs/box_attn.png)
+### Python Version
+In the original installation, the authors suggested to create a conda environment of Python version 3.8. However, this is outdated since some of the newest dependencies stopped supporting this version. Thus, we have used Python version 3.10.14 for our project. 
 
-**Abstract.** In this paper, we propose a simple attention mechanism, we call box-attention. It enables spatial interaction between grid features, as sampled from boxes of interest, and improves the learning capability of transformers for several vision tasks. Specifically, we present BoxeR, short for Box Transformer, which attends to a set of boxes by predicting their transformation from a reference window on an input feature map. The BoxeR computes attention weights on these boxes by considering its grid structure. Notably, BoxeR-2D naturally reasons about box information within its attention module, making it suitable for end-to-end instance detection and segmentation tasks. By learning invariance to rotation in the box-attention module, BoxeR-3D is capable of generating discriminative information from a bird's-eye view plane for 3D end-to-end object detection. Our experiments demonstrate that the proposed BoxeR-2D achieves state-of-the-art results on COCO detection and instance segmentation. Besides, BoxeR-3D improves over the end-to-end 3D object detection baseline and already obtains a compelling performance for the vehicle category of Waymo Open, without any class-specific optimization.
+### Setup.py
+The original authors used setup.py to initialize the end-to-end project, but some of the required libraries are outdated. In particular,  ```waymo-open-dataset-tf-2-6-0``` is causing a lot of errors due to incompatibility with the newest TensorFlow (2.12.0). As a result, we have changed to install ```waymo-open-dataset-tf-2-12-0``` version 1.6.4 and it resolves all the incompatibility issues. 
 
-## License
+In fact, we recommend to mannually install ```waymo-open-dataset-tf-2-12-0``` first even before running setup.py because ```pip``` will automically install all the dependencies needed for waymo dataset with the correct versions. This will help a smoother setup experience. 
 
-This project is released under the [MIT License](./LICENSE).
+### ```torch._six```
 
-## Citing BoxeR
+Dependency on Python 2 and 3 compatibility library ```six``` has been removed according to [this](https://github.com/pytorch/pytorch/pull/94709) commit on PyTorch. However, some of the helper files in BoxeR still uses the ```six``` library. Setting ```string_classes = str``` will resolve this issue.
 
-If you find BoxeR useful in your research, please consider citing:
+### ```collections.Mapping```
 
-```bibtex
-@article{nguyen2021boxer,
-  title={BoxeR: Box-Attention for 2D and 3D Transformers},
-  author={Duy{-}Kien Nguyen and Jihong Ju and Olaf Booij and Martin R. Oswald and Cees G. M. Snoek},
-  journal={arXiv preprint arXiv:2111.13087},
-  year={2021}
-}
+```collections.Mapping``` is deprecated. Add ```from collections.abc import Mapping``` and use ```mapping``` instead. 
+
+### Installed Packages
+Below is a list of installed packages from running ```pip list``` on my conda environment:
+```
+Package                      Version            
+---------------------------- ------------------
+absl-py                      1.4.0
+antlr4-python3-runtime       4.9.3
+array_record                 0.5.1
+asttokens                    2.4.1
+astunparse                   1.6.3
+black                        24.4.0
+cachetools                   5.3.3
+certifi                      2024.2.2
+charset-normalizer           3.3.2
+click                        8.1.7
+cloudpickle                  3.0.0
+comm                         0.2.2
+contourpy                    1.2.1
+cycler                       0.12.1
+Cython                       0.29.30
+dacite                       1.8.1
+dask                         2023.3.1
+dataclass_array              1.5.1
+debugpy                      1.6.7
+decorator                    5.1.1
+detectron2                   0.6                
+dm-tree                      0.1.8
+e2edet                       0.1                
+einops                       0.7.0
+einsum                       0.3.0
+etils                        1.7.0
+exceptiongroup               1.2.0
+executing                    2.0.1
+filelock                     3.13.4
+flatbuffers                  24.3.25
+fonttools                    4.51.0
+fsspec                       2024.3.1
+fvcore                       0.1.5.post20221221
+gast                         0.4.0
+google-auth                  2.16.2
+google-auth-oauthlib         1.0.0
+google-pasta                 0.2.0
+googleapis-common-protos     1.63.0
+grpcio                       1.62.1
+h5py                         3.11.0
+hydra-core                   1.3.2
+idna                         3.7
+imageio                      2.34.0
+immutabledict                2.2.0
+importlib_metadata           7.1.0
+importlib_resources          6.4.0
+iopath                       0.1.9
+ipykernel                    6.29.3
+ipython                      8.22.2
+jax                          0.4.26
+jedi                         0.19.1
+Jinja2                       3.1.3
+joblib                       1.4.0
+jupyter_client               8.6.1
+jupyter_core                 5.7.2
+keras                        2.12.0
+kiwisolver                   1.4.5
+lark                         1.1.9
+lazy_loader                  0.4
+libclang                     18.1.1
+llvmlite                     0.42.0
+locket                       1.0.0
+Markdown                     3.6
+markdown-it-py               3.0.0
+MarkupSafe                   2.1.5
+matplotlib                   3.6.1
+matplotlib-inline            0.1.7
+mdurl                        0.1.2
+ml-dtypes                    0.3.2
+mpmath                       1.3.0
+munkres                      1.1.4
+mypy-extensions              1.0.0
+namex                        0.0.8
+nest_asyncio                 1.6.0
+networkx                     3.3
+numba                        0.59.1
+numpy                        1.23.0
+nvidia-cublas-cu12           12.3.4.1
+nvidia-cuda-cupti-cu12       12.3.101
+nvidia-cuda-nvcc-cu12        12.3.107
+nvidia-cuda-nvrtc-cu12       12.3.107
+nvidia-cuda-runtime-cu12     12.3.101
+nvidia-cudnn-cu12            8.9.7.29
+nvidia-cufft-cu12            11.0.12.1
+nvidia-curand-cu12           10.3.4.107
+nvidia-cusolver-cu12         11.5.4.101
+nvidia-cusparse-cu12         12.2.0.103
+nvidia-nccl-cu12             2.19.3
+nvidia-nvjitlink-cu12        12.3.101
+nvidia-nvtx-cu12             12.1.105
+oauthlib                     3.2.2
+omegaconf                    2.3.0
+opencv-python                4.9.0.80
+OpenEXR                      1.3.9
+opt-einsum                   3.3.0
+optree                       0.11.0
+packaging                    24.0
+pandas                       1.5.3
+parso                        0.8.4
+partd                        1.4.1
+pathspec                     0.12.1
+pexpect                      4.9.0
+pickleshare                  0.7.5
+Pillow                       9.2.0
+pip                          23.3.1
+platformdirs                 4.2.0
+plotly                       5.13.1
+portalocker                  2.8.2
+promise                      2.3
+prompt-toolkit               3.0.42
+protobuf                     3.20.3
+psutil                       5.9.8
+ptyprocess                   0.7.0
+pure-eval                    0.2.2
+pyarrow                      10.0.0
+pyasn1                       0.6.0
+pyasn1_modules               0.4.0
+pycocotools                  2.0.7
+Pygments                     2.17.2
+pyparsing                    3.1.2
+python-dateutil              2.9.0
+PyWavelets                   1.6.0
+PyYAML                       6.0.1
+pyzmq                        25.1.2
+requests                     2.31.0
+requests-oauthlib            2.0.0
+rich                         13.7.1
+rsa                          4.9
+scikit-image                 0.20.0
+scikit-learn                 1.2.2
+scipy                        1.13.0
+setuptools                   67.6.0
+six                          1.16.0
+stack-data                   0.6.2
+sympy                        1.12
+tabulate                     0.9.0
+tenacity                     8.2.3
+tensorboard                  2.12.3
+tensorboard-data-server      0.7.2
+tensorflow                   2.12.0
+tensorflow-addons            0.23.0
+tensorflow-datasets          4.9.4
+tensorflow-estimator         2.12.0
+tensorflow-graphics          2021.12.3
+tensorflow-io-gcs-filesystem 0.36.0
+tensorflow-metadata          1.14.0
+tensorflow-probability       0.19.0
+termcolor                    2.4.0
+threadpoolctl                3.4.0
+tifffile                     2024.2.12
+toml                         0.10.2
+tomli                        2.0.1
+toolz                        0.12.1
+torch                        2.2.2
+torchaudio                   2.2.2
+torchvision                  0.17.2
+tornado                      6.4
+tqdm                         4.66.2
+traitlets                    5.14.2
+trimesh                      4.3.1
+triton                       2.2.0
+typeguard                    2.13.3
+typing_extensions            4.11.0
+unicodedata2                 15.1.0
+urllib3                      2.2.1
+visu3d                       1.5.1
+waymo-open-dataset-tf-2-12-0 1.6.4
+wcwidth                      0.2.13
+Werkzeug                     3.0.2
+wheel                        0.41.2
+wrapt                        1.14.1
+yacs                         0.1.8
+zipp                         3.17.0
 ```
 
-## Main Results
+## Results
+Result generated from the BoxeR-2D model trained only on object detection:
 
-### COCO Instance Segmentation Baselines with BoxeR-2D
-
-<table><tbody>
-<!-- START TABLE -->
-<!-- TABLE HEADER -->
-<th valign="bottom">Name</th>
-<th valign="bottom">param<br/>(M)</th>
-<th valign="bottom">infer<br/>time<br/>(fps)</th>
-<th valign="bottom">box<br/>AP</th>
-<th valign="bottom">box<br/>AP-S</th>
-<th valign="bottom">box<br/>AP-M</th>
-<th valign="bottom">box<br/>AP-L</th>
-<th valign="bottom">segm<br/>AP</th>
-<th valign="bottom">segm<br/>AP-S</th>
-<th valign="bottom">segm<br/>AP-M</th>
-<th valign="bottom">segm<br/>AP-L</th>
-<th valign="bottom"></th>
-<!-- TABLE BODY -->
-<!-- ROW: boxer2d_R_50_3x -->
- <tr><td align="center"><a href="e2edet/config/COCO-InstanceSegmentation/boxer2d_R_50_3x.yaml"> BoxeR-R50-3x</a></td>
-<td align="center">40.1</td>
-<td align="center">12.5</td>
-<td align="center">50.3</td>
-<td align="center">33.4</td>
-<td align="center">53.3</td>
-<td align="center">64.4</td>
-<td align="center">42.9</td>
-<td align="center">22.8</td>
-<td align="center">46.1</td>
-<td align="center">61.7</td>
-<td align="center">-</td>
-</tr>
-<!-- ROW: boxer2d_R_101_3x -->
- <tr><td align="center"><a href="e2edet/config/COCO-InstanceSegmentation/boxer2d_R_101_3x.yaml">BoxeR-R101-3x</a></td>
-<td align="center">59.0</td>
-<td align="center">10.0</td>
-<td align="center">50.7</td>
-<td align="center">33.4</td>
-<td align="center">53.8</td>
-<td align="center">65.7</td>
-<td align="center">43.3</td>
-<td align="center">23.5</td>
-<td align="center">46.4</td>
-<td align="center">62.5</td>
-<td align="center">-</td>
-</tr>
-<!-- ROW: boxer2d_R_101_5x_lsj -->
- <tr><td align="center"><a href="e2edet/config/COCO-InstanceSegmentation/boxer2d_R_101_5x_lsj.yaml">BoxeR-R101-5x</a></td>
-<td align="center">59.0</td>
-<td align="center">10.0</td>
-<td align="center">51.9</td>
-<td align="center">34.2</td>
-<td align="center">55.8</td>
-<td align="center">67.1</td>
-<td align="center">44.3</td>
-<td align="center">24.7</td>
-<td align="center">48.0</td>
-<td align="center">63.8</td>
-<td align="center">-</td>
-</tr>
-<!-- ROW: boxer2d_R_101_5x_lsj_resmode_v2 -->
- <tr><td align="center"><a href="e2edet/config/COCO-InstanceSegmentation/boxer2d_R_101_5x_lsj_resmode_v2.yaml">BoxeR-R101-5x</a><br/>(v2)</td>
-<td align="center">59.0</td>
-<td align="center">10.0</td>
-<td align="center">52.3</td>
-<td align="center">33.9</td>
-<td align="center">55.7</td>
-<td align="center">67.5</td>
-<td align="center">44.8</td>
-<td align="center">23.9</td>
-<td align="center">48.4</td>
-<td align="center">64.3</td>
-<td align="center"><a href="https://drive.google.com/file/d/1cc0Duoftz4Fb0LPqE-ylqwDHy-iA1ShU/view?usp=sharing">link</a></td>
-</tr>
-</tbody></table>
-
-## Installation
-
-### Requirements
-
-- Linux, CUDA>=11, GCC>=5.4
-- Python>=3.8
-
-  We recommend you to use Anaconda to create a conda environment:
-
-  ```bash
-  conda create -n boxer python=3.8
-  ```
-
-  Then, activate the environment:
-
-  ```bash
-  conda activate boxer
-  ```
-
-- PyTorch>=1.10.1, torchvision>=0.11.2 (following instructions [here](https://pytorch.org/))
-
-  For example, you could install pytorch and torchvision as following:
-
-  ```bash
-  conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
-  ```
-
-- Other requirements & Compilation
-
-  ```bash
-  python -m pip install -e BoxeR
-  ```
-	
-  If you are inside the ```BoxeR``` folder, then run:
-  ```bash
-  python -m pip install -e ./
-  ```
-
-  You can test the CUDA operators (box and instance attention) by running
-
-  ```bash
-  python tests/box_attn_test.py
-  python tests/instance_attn_test.py
-  ```
-
-## Usage
-
-### Dataset preparation
-
-The datasets are assumed to exist in a directory specified by the environment variable $E2E_DATASETS.
-If the environment variable is not specified, it will be set to be `.data`.
-Under this directory, detectron2 will look for datasets in the structure described below.
-
-```
-$E2E_DATASETS/
-├── coco/
-└── waymo/
-```
-
-For COCO Detection and Instance Segmentation, please download [COCO 2017 dataset](https://cocodataset.org/) and organize them as following:
-
-```
-$E2E_DATASETS/
-└── coco/
-	├── annotation/
-		├── instances_train2017.json
-		├── instances_val2017.json
-		└── image_info_test-dev2017.json
-	├── image/
-		├── train2017/
-		├── val2017/
-		└── test2017/
-	└── vocabs/
-		└── coco_categories.txt - the mapping from coco categories to indices.
-```
-
-The `coco_categories.txt` can be downloaded [here](https://drive.google.com/file/d/1AcLUxVRzF2m26tNaFrAsnOvX0Z5L9oSz/view?usp=sharing).
-
-For Waymo Detection, please download [Waymo Open dataset](https://waymo.com/intl/en_us/open/) and organize them as following:
-
-```
-$E2E_DATASETS/
-└── waymo/
-	├── infos/
-		├── dbinfos_train_1sweeps_withvelo.pkl
-		├── infos_train_01sweeps_filter_zero_gt.pkl
-		└── infos_val_01sweeps_filter_zero_gt.pkl
-	└── lidars/
-		├── gt_database_1sweeps_withvelo/
-			├── CYCLIST/
-			├── VEHICLE/
-			└── PEDESTRIAN/
-		├── train/
-			├── annos/
-			└── lidars/
-		└── val/
-			├── annos/
-			└── lidars/
-```
-
-You can generate data files for our training and evaluation from raw data by running `create_gt_database.py` and `create_imdb` in `tools/preprocess`.
-
-### Training
-
-Our script is able to automatically detect the number of available gpus on a single node.
-It works best with Slurm system when it can auto-detect the number of available gpus along with nodes.
-The command for training BoxeR is simple as following:
-
-```bash
-python tools/run.py --config ${CONFIG_PATH} --model ${MODEL_TYPE} --task ${TASK_TYPE}
-```
-
-For example,
-
-- COCO Detection
-
-```bash
-python tools/run.py --config e2edet/config/COCO-Detection/boxer2d_R_50_3x.yaml --model boxer2d --task detection
-```
-
-- COCO Instance Segmentation
-
-```bash
-python tools/run.py --config e2edet/config/COCO-InstanceSegmentation/boxer2d_R_50_3x.yaml --model boxer2d --task detection
-```
-
-- Waymo Detection,
-
-```bash
-python tools/run.py --config e2edet/config/Waymo-Detection/boxer3d_pointpillar.yaml --model boxer3d --task detection3d
-```
-
-#### Some tips to speed-up training
-
-- If your file system is slow to read images but your memory is huge, you may consider enabling 'cache_mode' option to load whole dataset into memory at the beginning of training:
-
-```bash
-python tools/run.py --config ${CONFIG_PATH} --model ${MODEL_TYPE} --task ${TASK_TYPE} dataset_config.${TASK_TYPE}.cache_mode=True
-```
-
-- If your GPU memory does not fit the batch size, you may consider to use 'iter_per_update' to perform gradient accumulation:
-
-```bash
-python tools/run.py --config ${CONFIG_PATH} --model ${MODEL_TYPE} --task ${TASK_TYPE} training.iter_per_update=2
-```
-
-- Our code also supports mixed precision training. It is recommended to use when you GPUs architecture can perform fast FP16 operations:
-
-```bash
-python tools/run.py --config ${CONFIG_PATH} --model ${MODEL_TYPE} --task ${TASK_TYPE} training.use_fp16=(float16 or bfloat16)
-```
-
-### Evaluation
-
-You can get the config file and pretrained model of BoxeR, then run following command to evaluate it on COCO 2017 validation/test set:
-
-```bash
-python tools/run.py --config ${CONFIG_PATH} --model ${MODEL_TYPE} --task ${TASK_TYPE} training.run_type=(val or test or val_test) training.resume=True training.resume_file=<PATH_TO_CKPT>
-```
-
-For Waymo evaluation, you need to additionally run the script `e2edet/evaluate/waymo_eval.py` from the root folder to get the final result.
-
-### Analysis and Visualization
-
-You can get the statistics of BoxeR (fps, flops, \# parameters) by running `tools/analyze.py` from the root folder.
-
-```bash
-python tools/analyze.py --config-path save/COCO-InstanceSegmentation/boxer2d_R_101_3x.yaml --model-path save/COCO-InstanceSegmentation/boxer2d_final.pth --tasks speed flop parameter
-```
-
-The notebook for BoxeR-2D visualization is provided in `tools/visualization/BoxeR_2d_segmentation.ipynb`.
+![BoxeR](./figs/result.JPG)
