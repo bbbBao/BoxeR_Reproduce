@@ -88,7 +88,7 @@ setup(
         "omegaconf>=2.1",
         "pycocotools",
         "numpy",
-        "waymo-open-dataset-tf-2-6-0",
+        "waymo-open-dataset-tf-2-12-0",
         "matplotlib",
         "numba",
         "scipy",

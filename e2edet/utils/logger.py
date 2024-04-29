@@ -99,7 +99,7 @@ class Logger:
             print(str(x) + "\n")
 
     def log_progress(self, info):
-        if not isinstance(info, collections.Mapping):
+        if not isinstance(info, Mapping):
             self.write(info)
 
         if not self._is_master:

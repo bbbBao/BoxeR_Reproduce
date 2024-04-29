@@ -9,7 +9,7 @@ import torch.nn as nn
 import torchvision
 import torch.nn.functional as F
 import torchvision.transforms.functional as TF
-from torch._six import string_classes
+string_classes = str
 
 from e2edet.utils.distributed import get_world_size
 from e2edet.utils.box_ops import box_cxcywh_to_xyxy
