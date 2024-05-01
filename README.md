@@ -1,5 +1,7 @@
 # BoxeR
 
+Team member: Tianyi Bao (tb1096), Chenhao Qi (cq86)
+
 This repository is a fork from [BoxeR](https://github.com/kienduynguyen/BoxeR). Please check the original repository for more information on the mechanism. 
 
 BoxeR is proposed by [Duy-Kien Nguyen](https://scholar.google.com/citations?user=welhhBIAAAAJ&hl=en), Jihong Ju, Olaf Booij, [Martin R. Oswald](https://scholar.google.de/citations?user=biytQP8AAAAJ&hl=en), [Cees Snoek](https://www.ceessnoek.info/).
